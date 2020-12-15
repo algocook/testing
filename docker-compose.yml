@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  users_server: 
+  users: 
     container_name: users_server
     build:
       context: ../users
@@ -12,7 +12,7 @@ services:
   api:
     container_name: api_server
     depends_on:
-      - users_server
+      - users
     build:
       context: ../api
       dockerfile: Dockerfile
