@@ -3,11 +3,21 @@ version: '3'
 services:
   users: 
     container_name: users_server
+    depends_on:
+      - postgres
     build:
       context: ../users
       dockerfile: Dockerfile
     ports:
       - "5300:5300"
+
+  recipes:
+    container_name: recipes_server
+    build: 
+      context: ../recipes
+      dockerfile: Dockerfile
+    ports:
+        - "5301:5301"
 
   api:
     container_name: api_server
@@ -18,3 +28,20 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+
+  mongodb:
+    container_name: mongodb_server
+    image: 'mongo'
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - '27017-27019:27017-27019'
+
+  postgres:
+    container_name: postgres_server
+    image: "postgres"
+    environment:
+      POSTGRES_DB: "users"
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
